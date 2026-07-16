@@ -1,12 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-g = 9.81                
-
-# Rocket specifications
-mass = 0.150            # kilograms
-diameter = 0.035        # meters
-front_area = 0.000962   # square meters
+g = 9.81   
 
 # Engine specifications
 massEngine = 0.0241         # kilograms
@@ -19,6 +14,15 @@ thrustCrusing = 4.5         # Newtons
 thrustTime_max = 0.22       # seconds
 thrustTime_crusing = 1.38   # seconds
 thrustTime = thrustTime_max + thrustTime_crusing    # 1.6 seconds
+
+# Rocket specifications
+massStructure = 0.089   #kilograms densite pla : 1240,000 kg / m^3
+mass = massStructure + massEngine  # kilograms
+diameter = 0.034        # meters
+front_area = 0.000962   # square meters
+print(mass)
+
+
 
 dt = 0.01
 t = np.arange(-5, 20, dt)
@@ -55,8 +59,8 @@ for tps in t:
             impact_time = tps
 
     acc = f_total / mass
-    vel = vel + acc * dt
-    alt = alt + vel * dt
+    vel += acc * dt
+    alt += vel * dt
 
     list_a.append(acc)
     list_v.append(vel)
@@ -66,12 +70,15 @@ for tps in t:
 max_alt_idx = list_y.index(max(list_y))
 max_alt_t = t[max_alt_idx]
 
+plt.figure(figsize=(10, 6))
 plt.plot(t, list_y)
+plt.plot(t, list_v, label='Vitesse max : {:.2f} m/s ou {:.2f} km/h' .format(max(list_v), max(list_v) * 3.6))
 plt.plot(max_alt_t, max(list_y), 'go')
 plt.annotate('Altitude max : {:.2f} m'.format(max(list_y)), (max_alt_t, max(list_y)),
              textcoords='offset points', xytext=(10, 0), ha='left', va='center', fontsize=9)
 plt.axvline(x=thrustTime, color='red', linestyle='--', linewidth=0.5)
 plt.scatter(impact_time, 0, color = 'orange', label = 'Impact :  {:.2f} s'.format(impact_time))
-plt.legend()
+plt.legend(loc='lower left')
 plt.grid()
 plt.show()
+
